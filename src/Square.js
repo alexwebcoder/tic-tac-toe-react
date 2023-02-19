@@ -1,7 +1,7 @@
 const Square = ({ value }) => {
  
     const handleClick = ({value}) => {
-       console.log('clickeddddd');
+       console.log('clicked');
     }
 
     return (
