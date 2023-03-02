@@ -9,10 +9,9 @@ const Board = () => {
 
   //Array(9).fill(null) (Array constructor) creates an array with nine elements and sets each of them to null. (fill method changes all methods in the array to static value (in this case null)) The useState() call around it declares a squares state variable that’s initially set to that array. Each entry in the array corresponds to the value of a square. The board component will then pass the value prop down to each of the square components that it renders.
   const [squares, setSquares] = useState(Array(9).fill(null));
-
   //the squares variable will be assigned to the value property of each square component and the value property will be passed to the square component as a prop. So each square will receive a value prop of 'X' , 'O' or null. The other prop will be onSquareClick.
 
-  // To let the players know when the game is over, you can display text such as “Winner: X” or “Winner: O”. To do that you’ll add a status section to the Board component. The status will display the winner if the game is over and if the game is ongoing you’ll display which player’s turn is next:
+  // To let the players know when the game is over, you can display text such as “Winner: X” or “Winner: O”. To do that you’ll add a status section to the Board component. The status will display the winner, if the game is over and if the game is ongoing you’ll display which player’s turn is next:
   
   const winner = calculateWinner(squares);
   let status;
@@ -80,6 +79,8 @@ const Board = () => {
 
 const calculateWinner = (squares) => {
   const lines = [
+
+    //the winning combinations are being stored in the lines variable
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -89,10 +90,12 @@ const calculateWinner = (squares) => {
     [0, 4, 8],
     [2, 4, 6],
   ];
-
+  //we are looping over the lines variable 
   for (let i = 0; i < lines.length; i++) {
+    //we are using a destructuring assignment to unpack the values from the array and stoere them into the variables a, b and c
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      console.log('squares A:',[a], 'squares b:', squares[b], 'squares c', squares[c]);
       return squares[a];
     }
   }
