@@ -17,17 +17,7 @@ const Board = ({ xIsNext, squares, onPlay}) => {
   
   //the squares variable will be assigned to the value property of each square component and the value property will be passed to the square component as a prop. So each square will receive a value prop of 'X' , 'O' or null. The other prop will be onSquareClick.
 
-  // To let the players know when the game is over, you can display text such as “Winner: X” or “Winner: O”. To do that you’ll add a status section to the Board component. The status will display the winner, if the game is over and if the game is ongoing you’ll display which player’s turn is next:
   
-  const winner = calculateWinner(squares);
-  let status;
-
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-     //Each time a player moves, xIsNext (a boolean) will be flipped to determine which player goes next and the game’s state will be saved
-    status = "Next player: " + (xIsNext ? "X" :  "O");
-  }
    
   // JavaScript supports closures which means an inner function (e.g. handleClick) has access to variables and functions defined in a outer function (e.g. Board). The handleClick function can read the squares state and call the setSquares method because they are both defined inside of the Board function.
   const handleClick = (i) => {
@@ -38,6 +28,7 @@ const Board = ({ xIsNext, squares, onPlay}) => {
       //if a player has won or if a square has an x or o, we return the function early before it updates the state of the board.
       return;
     }
+    
     //The handleClick function creates a copy of the squares array (nextSquares) with the JavaScript slice() Array method. Then, handleClick updates the nextSquares array to add X or O to the ([i] index) square.
     //If you mutated the squares array, implementing time travel would be very difficult.
 
@@ -58,64 +49,68 @@ const Board = ({ xIsNext, squares, onPlay}) => {
 
     //the setSquares and setXIsNext calls below are being replaced by a single call tho the onPlay function so the Game component can update the Board when the user clicks a square.
     // setSquares(nextSquares);
-    // setXisNext(!xIsNext);
-  }
+    // setXIsNext(!xIsNext);
+
+    // To let the players know when the game is over, you can display text such as “Winner: X” or “Winner: O”. To do that you’ll add a status section to the Board component. The status will display the winner, if the game is over and if the game is ongoing you’ll display which player’s turn is next:
   
-    return ( 
-        <>
-          <div className="status">{status}</div>
-          <div className="board-row">
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+     //Each time a player moves, xIsNext (a boolean) will be flipped to determine which player goes next and the game’s state will be saved
+    status = "Next player: " + (xIsNext ? "X" :  "O");
+  }
 
-            {/* value and onSquareClick will be passed to the child as a prop */}
-            {/* handleClick is wrapped in an anonymous funcition to prevent multiple re renders, the arguement corresponds to the index of each square*/}
+  {/* value and onSquareClick will be passed to the child as a prop */}
+        {/* handleClick is wrapped in an anonymous funcition to prevent multiple re renders, the arguement corresponds to the index of each square*/}
 
-            {/* Clicking on the upper left square runs the function that the button received as its onClick prop from the Square. The Square component received that function as its onSquareClick prop from the Board. The Board component defined that function directly in the JSX. It calls handleClick with an argument of 0. */}
-           {/* handleClick uses the argument (0) to update the first element of the squares array from null to X. */}
-           {/* The squares state of the Board component was updated, so the Board and all of its children re-render. This causes the value prop of the Square component with index 0 to change from null to X */}
+        {/* Clicking on the upper left square runs the function that the button received as its onClick prop from the Square. The Square component received that function as its onSquareClick prop from the Board. The Board component defined that function directly in the JSX. It calls handleClick with an argument of 0. */}
+       {/* handleClick uses the argument (0) to update the first element of the squares array from null to X. */}
+       {/* The squares state of the Board component was updated, so the Board and all of its children re-render. This causes the value prop of the Square component with index 0 to change from null to X */}
 
-
-            <Square value={squares[0]} onSquareClick={()=>handleClick(0)} />
-            <Square value={squares[1]} onSquareClick={()=>handleClick(1)}/>
-            <Square value={squares[2]} onSquareClick={()=>handleClick(2)}/>
-          </div>
-          <div className="board-row">
-            <Square value={squares[3]} onSquareClick={()=>handleClick(3)}/>
-            <Square value={squares[4]} onSquareClick={()=>handleClick(4)}/>
-            <Square value={squares[5]} onSquareClick={()=>handleClick(5)}/>
-          </div>
-          <div className="board-row">
-            <Square value={squares[6]} onSquareClick={()=>handleClick(6)}/>
-            <Square value={squares[7]} onSquareClick={()=>handleClick(7)}/>
-            <Square value={squares[8]} onSquareClick={()=>handleClick(8)}/>
-         </div>
-        </>  
-     );
+  return ( 
+    <>
+      <div className="status">{status}</div>
+      <div className="board-row">
+        <Square value={squares[0]} onSquareClick={()=>handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={()=>handleClick(1)}/>
+        <Square value={squares[2]} onSquareClick={()=>handleClick(2)}/>
+      </div>
+      <div className="board-row">
+        <Square value={squares[3]} onSquareClick={()=>handleClick(3)}/>
+        <Square value={squares[4]} onSquareClick={()=>handleClick(4)}/>
+        <Square value={squares[5]} onSquareClick={()=>handleClick(5)}/>
+      </div>
+      <div className="board-row">
+        <Square value={squares[6]} onSquareClick={()=>handleClick(6)}/>
+        <Square value={squares[7]} onSquareClick={()=>handleClick(7)}/>
+        <Square value={squares[8]} onSquareClick={()=>handleClick(8)}/>
+     </div>
+    </>  
+   );
+  }  
 }
 
 const calculateWinner = (squares) => {
-  const lines = [
-
-    //the winning combinations are being stored in the lines variable
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  
-  //we are looping over the lines variable 
-  for (let i = 0; i < lines.length; i++) {
-    //we are using a destructuring assignment to unpack the values from the array and store them into distinct variable of a, b and c
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-  
-      return squares[a];
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
     }
-  }
-  return null;
+    return null;
+  ;
 }
  
 export default Board;
