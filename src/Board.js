@@ -21,32 +21,26 @@ const Board = ({ xIsNext, squares, onPlay}) => {
    
   // JavaScript supports closures which means an inner function (e.g. handleClick) has access to variables and functions defined in a outer function (e.g. Board). The handleClick function can read the squares state and call the setSquares method because they are both defined inside of the Board function.
   const handleClick = (i) => {
-
     //you will call calculateWinner(squares) in the Board component’s handleClick function to check if a player has won. You can perform this check at the same time you check if a user has clicked a square that already has a X or and O. We’d like to return early in both cases:
-
-    if(squares[i] || calculateWinner(squares)){
+    if(calculateWinner(squares) || squares[i]){
       //if a player has won or if a square has an x or o, we return the function early before it updates the state of the board.
       return;
     }
-    
+  
     //The handleClick function creates a copy of the squares array (nextSquares) with the JavaScript slice() Array method. Then, handleClick updates the nextSquares array to add X or O to the ([i] index) square.
     //If you mutated the squares array, implementing time travel would be very difficult.
-
     // However, you used slice() to create a new copy of the squares array after every move, and treated it as immutable. This will allow you to store every past version of the squares array, and navigate between the turns that have already happened.
 
     const nextSquares = squares.slice();
     if (xIsNext) {
-
       //the i arguemnt on the nextSquares variable takes the index of the square that should be updated
       nextSquares[i] = "X";
-
     } else {
       nextSquares[i] = "O";
     }
     //the onPlay function calls nextSquares so the game component can update when the user clicks the next square
     onPlay(nextSquares);
     //Calling the setSquares function lets React know the state of the component has changed. This will trigger a re-render of the components that use the squares state (Board) as well as its child components (the Square components that make up the board).
-
     //the setSquares and setXIsNext calls below are being replaced by a single call tho the onPlay function so the Game component can update the Board when the user clicks a square.
     // setSquares(nextSquares);
     // setXIsNext(!xIsNext);
@@ -68,6 +62,7 @@ const Board = ({ xIsNext, squares, onPlay}) => {
         {/* Clicking on the upper left square runs the function that the button received as its onClick prop from the Square. The Square component received that function as its onSquareClick prop from the Board. The Board component defined that function directly in the JSX. It calls handleClick with an argument of 0. */}
        {/* handleClick uses the argument (0) to update the first element of the squares array from null to X. */}
        {/* The squares state of the Board component was updated, so the Board and all of its children re-render. This causes the value prop of the Square component with index 0 to change from null to X */}
+  }  
 
   return ( 
     <>
@@ -89,28 +84,8 @@ const Board = ({ xIsNext, squares, onPlay}) => {
      </div>
     </>  
    );
-  }  
 }
 
-const calculateWinner = (squares) => {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
-      }
-    }
-    return null;
-  ;
-}
+
  
 export default Board;
