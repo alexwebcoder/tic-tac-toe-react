@@ -1,5 +1,6 @@
+//bridge between our App component in App.js and the the web browser (index.html)
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom/client';// reacts library to talk to web browser
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

@@ -1,14 +1,20 @@
 import Square from "./Square";
-import { useState } from "react";
+// import { useState } from "react"; //state is to remember things
 
-const Board = () => {
-  //Each time a player moves, xIsNext (a boolean) will be flipped to determine which player goes next and the game’s state will be saved
-  const [xIsNext, setXisNext] = useState(true); 
+//the onPlay function is passed in as a prop that Board can call with the updated squares array whenever a player makes a move. Adding the onPlay function as a prop is what makes the Board component fully controlled by the game component based on it receiving ths onPlay prop.
+const Board = ({ xIsNext, squares, onPlay}) => {
+ 
+  // const [xIsNext, setXisNext] = useState(true); 
   // The Board needs to know the state of the 9 Square components. Therefore, the game's state is stored in the parent Board component. The parent then can pass state back down to the children via props. (Lifting State Up)
   //useState is the hook that returns two values. Squares is the variable that holds the current State and setSquares is the function that updates the state.
 
   //Array(9).fill(null) (Array constructor) creates an array with nine elements and sets each of them to null. (fill method changes all methods in the array to static value (in this case null)) The useState() call around it declares a squares state variable that’s initially set to that array. Each entry in the array corresponds to the value of a square. The board component will then pass the value prop down to each of the square components that it renders.
-  const [squares, setSquares] = useState(Array(9).fill(null));
+  
+
+  //  this is getting moved to Game.js. Moving this state to the Game component will make the board fully controlled by the props that it receives.
+  
+  // const [squares, setSquares] = useState(Array(9).fill(null));
+  
   //the squares variable will be assigned to the value property of each square component and the value property will be passed to the square component as a prop. So each square will receive a value prop of 'X' , 'O' or null. The other prop will be onSquareClick.
 
   // To let the players know when the game is over, you can display text such as “Winner: X” or “Winner: O”. To do that you’ll add a status section to the Board component. The status will display the winner, if the game is over and if the game is ongoing you’ll display which player’s turn is next:
@@ -19,6 +25,7 @@ const Board = () => {
   if (winner) {
     status = "Winner: " + winner;
   } else {
+     //Each time a player moves, xIsNext (a boolean) will be flipped to determine which player goes next and the game’s state will be saved
     status = "Next player: " + (xIsNext ? "X" :  "O");
   }
    
@@ -32,6 +39,10 @@ const Board = () => {
       return;
     }
     //The handleClick function creates a copy of the squares array (nextSquares) with the JavaScript slice() Array method. Then, handleClick updates the nextSquares array to add X or O to the ([i] index) square.
+    //If you mutated the squares array, implementing time travel would be very difficult.
+
+    // However, you used slice() to create a new copy of the squares array after every move, and treated it as immutable. This will allow you to store every past version of the squares array, and navigate between the turns that have already happened.
+
     const nextSquares = squares.slice();
     if (xIsNext) {
 
@@ -41,9 +52,13 @@ const Board = () => {
     } else {
       nextSquares[i] = "O";
     }
+    //the onPlay function calls nextSquares so the game component can update when the user clicks the next square
+    onPlay(nextSquares);
     //Calling the setSquares function lets React know the state of the component has changed. This will trigger a re-render of the components that use the squares state (Board) as well as its child components (the Square components that make up the board).
-    setSquares(nextSquares);
-    setXisNext(!xIsNext);
+
+    //the setSquares and setXIsNext calls below are being replaced by a single call tho the onPlay function so the Game component can update the Board when the user clicks a square.
+    // setSquares(nextSquares);
+    // setXisNext(!xIsNext);
   }
   
     return ( 
@@ -90,12 +105,13 @@ const calculateWinner = (squares) => {
     [0, 4, 8],
     [2, 4, 6],
   ];
+  
   //we are looping over the lines variable 
   for (let i = 0; i < lines.length; i++) {
-    //we are using a destructuring assignment to unpack the values from the array and stoere them into the variables a, b and c
+    //we are using a destructuring assignment to unpack the values from the array and store them into distinct variable of a, b and c
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      console.log('squares A:',[a], 'squares b:', squares[b], 'squares c', squares[c]);
+  
       return squares[a];
     }
   }
